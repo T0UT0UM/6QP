@@ -1,14 +1,14 @@
 #Number of players
-NB_JOUEURS = 2
+NB_PLAYERS = 2
 
 #Number of turns
-NB_TOURS = 10
+NB_TURNS = 10
 
 #Number of cards
-NB_CARTES = 104
+NB_CARDS = 104
 
 #Number of rows
 NB_ROWS = 4
 
 #Number of cards per rows
-CARTE_PER_ROWS = 5
+CARDS_PER_ROWS = 5

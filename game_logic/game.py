@@ -23,11 +23,48 @@ class Gameboard:
 
         Args:
             card (Card): The card to add to the gameboard.
+        Returns:
+            penalty (int): The number of penalty points the player gets for adding the card.
         """
         # Find the row with the lowest value gap
-        gap = 104
-        
-        
+        gap = gc.NB_CARDS
+        row = -1
+        for i in range(gc.NB_ROWS):
+            temp = card.value - self.rows[i][-1].value
+            if 0 < temp < gap:
+                gap = temp
+                row = i
+
+        # If the card valus is lower than every last card in the rows
+        if row == -1:
+            return -1
+
+        # Add the card to the row
+        penalty = 0
+        if (len(self.rows[row]) < gc.CARDS_PER_ROWS):
+            self.rows[row].append(card)
+        else:
+            for i in range(gc.CARDS_PER_ROWS):
+                penalty += self.rows[row].pop().bullheads
+            self.rows[row].append(card)
+        return penalty
+
+    def replace_row(self, row_number, card):
+        """
+        Replace a row with a new card.
+
+        Args:
+            row_number (int): The number of the row to replace.
+            card (Card): The card to replace the row with.
+
+        Returns:
+            penalty (int): The number of penalty points the player gets for replacing the row.
+        """
+        penalty = 0
+        for i in range(len(self.rows[row_number])):
+            penalty += self.rows[row_number].pop().bullheads
+        self.rows[row_number].append(card)
+        return penalty
 
 
 class Game:
@@ -44,7 +81,7 @@ class Game:
 
         # Initialize the players' hands
         for player in self.players:
-            for i in range(gc.NB_TOURS):
+            for i in range(gc.NB_TURNS):
                 player.add_card_to_hand(self.deck)
 
     def play(self):
