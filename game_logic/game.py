@@ -1,6 +1,6 @@
 import numpy as np
-import game_constants as gc
-from card import *
+import game_logic.game_constants as gc
+from game_logic.card import *
 
 class Gameboard:
     def __init__(self, deck):
@@ -10,7 +10,7 @@ class Gameboard:
         Args:
             deck (Deck): The deck from which to draw cards.
         """
-        self.rows = [[], [], [], []]
+        self.rows = [[] for i in range(gc.NB_ROWS)]
         self.deck = deck
 
         #Initialize the gameboard with 4 cards

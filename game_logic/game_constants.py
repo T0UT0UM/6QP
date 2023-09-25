@@ -1,6 +1,3 @@
-#Number of players
-NB_PLAYERS = 2
-
 #Number of turns
 NB_TURNS = 10
 
