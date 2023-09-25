@@ -1,5 +1,6 @@
 import sys
 sys.path.append('../game_logic')
+sys.path.append('../display')
 
 import game_logic.game as Game
 import display.main as display

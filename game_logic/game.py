@@ -3,6 +3,7 @@ import game_logic.game_constants as gc
 from game_logic.card import *
 from game_logic.player import Player
 
+
 class Gameboard:
     def __init__(self, deck):
         """
@@ -85,23 +86,27 @@ class Game:
         self.deck = Deck()
         self.gameboard = Gameboard(self.deck)
 
-        # Initialize the players' hands
-        for player in self.players:
-            for i in range(gc.NB_TURNS):
-                player.add_card_to_hand(self.deck)
+    def init_player(self, player):
+        # Initialize the players' hand
+        for i in range(gc.NB_TURNS):
+            player.add_card_to_hand(self.deck)
 
     def play(self):
         """
         Play the game.
         """
+        for player in self.players:
+            self.init_player(player)
+
         for i in range(gc.NB_TURNS):
             card_of_players = []
             index_of_players = [i for i in range(len(self.players))]
             for player in self.players:
+                card_value = player.get_card()
                 # While player.play_card() raises an ValueError, the player has to play a card
                 while True:
                     try:
-                        card_of_players.append(player.play_card())
+                        card_of_players.append(player.play_card(card_value))
                         break
                     except ValueError :
                         continue
