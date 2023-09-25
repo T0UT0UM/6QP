@@ -1,5 +1,3 @@
-from display.player_hand import Player_hand
-
 class Player:
     def __init__(self, name, difficulty = None):
         """
@@ -11,8 +9,7 @@ class Player:
         self.name = name
         self.difficulty = difficulty
         self.hand = []
-        self.penalties = 0
-        self.get_card = None
+        self.penalty_points = 0
 
     def add_card_to_hand(self, deck):
         """
@@ -39,8 +36,28 @@ class Player:
                 return self.hand.pop(i)  
         raise ValueError("Card not in hand")
 
+    def get_card(self):
+        """
+        Play a card from the player's hand.
+
+        Returns:
+            card_value (int): The value of the card to play.
+        """
+        card_value = int(input(self.name + ", choose a card to play: "))
+        return card_value
+
+    def choose_row(self):
+        """
+        Choose a row to replace.
+
+        Returns:
+            row_number (int): The number of the row to replace.
+        """
+        row_number = int(input(self.name + ", choose a row to replace: "))
+        return row_number
+
     def __str__(self):
         """
-        Return a string representation of the player's name.
+        Return a string representation of the player's hand.
         """
-        return self.name
+        return f"{self.name}: {', '.join(str(card) for card in self.hand)}"

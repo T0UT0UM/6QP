@@ -28,11 +28,11 @@ class Card:
 
     def __str__(self):
         """
-        Return a string representation of the card, e.g., "7 (*)".
+        Return a string representation of the card, e.g., "7 (1*)".
         """
-        bullheads_str = "*" * self.bullheads
-        return f"{self.value} ({bullheads_str})"
+        return f" |{self.value:3d}(*{self.bullheads}*)| "
 
+ 
 
 class Deck:
     def __init__(self):

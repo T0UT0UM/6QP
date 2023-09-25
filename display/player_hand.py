@@ -27,28 +27,30 @@ class Player_hand:
         for widget in self.player_frame.winfo_children():
             widget.destroy()
 
-    def get_card(self, event):
+    def get_card(self):
         """
         Play a card from the player's hand.
 
         Returns:
             card_value (int): The value of the card to play.
         """
-        # Get the card value from the image name
-        card_value = int(event.widget.image.cget("file").split("/")[-1].split(".")[0])
-        # Play the card
-        self.game.players[0].play_card(card_value)
-        # Display the hand
-        self.display_hand()
-        # Display the rows
-        self.game.gameboard.display_rows()
-        # If the game is over
-        if self.game.gameboard.is_game_over():
-            # End the game
-            self.game.end_game()
-        # Else, the player has to play a card
-        else:
-            self.game.players[0].add_card_to_hand(self.game.deck)
-            self.display_hand()
-            self.game.gameboard.display_rows()
+        # ask the player to click with the cursor on one of its card
+        # return the value of the card
+        card_value = 0
+
+        def on_click(event):
+            global card_value
+            card_value = int(event.widget.image.cget("file").split("/")[-1].split(".")[0])
+            print(card_value)
+
+        self.player_frame.bind("<Button-1>", on_click)
+        # wait for the player to click on a card
+        while card_value == 0:
+            self.player_frame.update()
+        self.player_frame.unbind("<Button-1>")
         return card_value
+
+    def on_click(self, event):
+        global card_value
+        card_value = int(event.widget.image.cget("file").split("/")[-1].split(".")[0])
+        print(card_value)

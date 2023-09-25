@@ -1,7 +1,7 @@
 import numpy as np
-import game_logic.game_constants as gc
-from game_logic.card import *
-from game_logic.player import Player
+import game_constants as gc
+from card import *
+from player import Player
 
 
 class Gameboard:
@@ -15,7 +15,7 @@ class Gameboard:
         self.rows = [[] for i in range(gc.NB_ROWS)]
         self.deck = deck
 
-        #Initialize the gameboard with 4 cards
+        #Initialize the gameboard with cards
         for i in range(gc.NB_ROWS):
             self.rows[i].append(self.deck.draw())
 
@@ -73,6 +73,17 @@ class Gameboard:
         self.rows[row_number].append(card)
         return penalty
 
+    def afficher(self):
+        """
+        Return a string representation of the gameboard.
+        """
+        print("=-----------==-----------==-----------==-----------==-----------==-----------=")
+        for row in self.rows:
+            for card in row:
+                print(str(card), end=" ")
+            print()
+            print("=-----------==-----------==-----------==-----------==-----------==-----------=")
+
 
 class Game:
     def __init__(self):
@@ -82,7 +93,7 @@ class Game:
         Args:
             players (list): The list of players.
         """
-        self.players = [Player("You")]
+        self.players = []
         self.deck = Deck()
         self.gameboard = Gameboard(self.deck)
 
@@ -98,26 +109,39 @@ class Game:
         for player in self.players:
             self.init_player(player)
 
+
         for i in range(gc.NB_TURNS):
             card_of_players = []
             index_of_players = [i for i in range(len(self.players))]
+
+            # Show the gameboard
+            self.gameboard.afficher()
+
             for player in self.players:
-                card_value = player.get_card()
+                print(player)
                 # While player.play_card() raises an ValueError, the player has to play a card
                 while True:
                     try:
+                        card_value = player.get_card()
                         card_of_players.append(player.play_card(card_value))
                         break
                     except ValueError :
                         continue
             # Sort the players by card value
-            index_of_players = [x for _, x in sorted(zip(card_of_players, index_of_players))]
+            index_of_players = sorted(index_of_players, key=lambda x: card_of_players[x].value)
+            
+
+            # Print the card played by the players
+            for index in index_of_players:
+                player = self.players[index]
+                card = card_of_players[index]
+                print(str(player.name) + " plays " + str(card))
 
             # For each player
             for index in index_of_players:
                 player = self.players[index]
                 card = card_of_players[index]
-                row_number = self.gameboard.can_add_card(card)
+                row_number = self.gameboard.can_add_card(card)                
 
                 # If the player can add a card to the gameboard
                 if row_number != -1:
@@ -125,7 +149,7 @@ class Game:
 
                 else:
                     row_number = player.choose_row()
-                    penalty = self.gameboard.replace_row(row_number, card)
+                    penalty = self.gameboard.replace_row(row_number - 1, card)
                 player.penalty_points += penalty
 
         # End of the game
@@ -144,4 +168,10 @@ class Game:
         print("The winner is " + str(self.players[index_of_players[0]]))
         for index in index_of_players:
             player = self.players[index]
-            print(str(player) + " has " + str(player.penalty_points) + " penalty points")
+            print(player.name + " : " + str(player.penalty_points) + " penalty points")
+
+if __name__ == "__main__":
+    game = Game()
+    game.players.append(Player("Player 1"))
+    game.players.append(Player("Player 2"))
+    game.play()

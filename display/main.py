@@ -18,12 +18,14 @@ class Menu:
         self.window.title("6 Qui Prend!")
         self.window.geometry("800x600")
 
+        self.game.menu = self
         self.gameboard_frame = tk.Frame(self.window, bg="white")
         self.player_frame = tk.Frame(self.window, bg="white")
         self.toolbar = tk.Frame(self.window, bg="#f0f0f0")
 
         self.gameboard = Gameboard(self.game, self.gameboard_frame)
         self.player_hand = Player_hand(self.game, self.player_frame)
+        self.game.players[0].get_card = self.player_hand.get_card
 
         welcome = tk.PhotoImage(file="display/images/welcome.png")
         self.welcome_label = tk.Label(self.window, image=welcome)
@@ -85,10 +87,10 @@ class Menu:
             widget.destroy()
 
     def play(self):
-        #self.game.play()
-        self.gameboard.display_rows()
         self.game.init_player(self.game.players[0])
-        self.player_hand.display_hand()
+        self.window_update()
+        self.player_frame.bind("<Button-1>", self.player_hand.on_click)
+        #self.game.play()
 
     def player_conf(self):
         """
@@ -153,4 +155,11 @@ class Menu:
 
     def rules(self):
         pass
+
+    def window_update(self):
+        """
+        Update the window.
+        """
+        self.gameboard.display_rows()
+        self.player_hand.display_hand()
 
