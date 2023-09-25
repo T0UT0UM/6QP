@@ -1,17 +1,22 @@
 import tkinter as tk
-import sys
-sys.path.append('../game_logic')
+from game_logic import player as Player
+from game_logic import bot as Bot
 
 class Menu:
-    def __init__(self):
+    def __init__(self, game):
         """
         Create the welcome window.
+
+        Args:
+            game (Game): The game to launch.
         """
+        self.game = game
+
         self.window = tk.Tk()
         self.window.title("6 Qui Prend!")
         self.window.geometry("800x600")
 
-        self.toolbar = tk.Frame(self.window, width = 200, bg="#f0f0f0")
+        self.toolbar = tk.Frame(self.window, bg="#f0f0f0")
 
         welcome = tk.PhotoImage(file="display/images/welcome.png")
         self.welcome_label = tk.Label(self.window, image=welcome)
@@ -77,15 +82,30 @@ class Menu:
         """
         Player configuration window.
         """
+
+        def add_bot(bot_name, difficulty):
+            self.game.players.append(Bot.Bot(bot_name, difficulty))
+            self.player_conf()
+
+        def delete_bot(bot_name):
+            for i in range(len(self.game.players)):
+                if self.game.players[i].name == bot_name:
+                    self.game.players.pop(i)
+                    break
+            self.player_conf()
+
+        def show_player_list():
+            tk.Label(self.toolbar, text="List of bots").pack(fill='x', ipady=10, pady=3)
+            players = tk.Listbox(self.toolbar, height=5)
+            players.pack(fill='x', ipady=10, pady=3)
+            for player in self.game.players:
+                if hasattr(player, "difficulty"):
+                    players.insert(tk.END, player.name+" ("+player.difficulty+")")
+                else:
+                    players.insert(tk.END, player.name)
+
+
         self.clear_toolbar()
-        # Create a back button
-        
-        # Create widgets on the toolbar that allows:
-            # - Enter a bot name
-            # - Select a difficulty : easy, medium, hard (radio button)
-            # - Add a bot
-            # - Delete a bot
-        # List of bots (number and name)
 
         # Back button
         tk.Button(self.toolbar,
@@ -106,22 +126,19 @@ class Menu:
         tk.Radiobutton(self.toolbar, text="Hard", variable=difficulty, value="Hard").pack(anchor='w', padx=30, pady=3)
         tk.Button(self.toolbar,
                   text="Add",
-                  command=lambda: self.add_bot(bot_name.get(), difficulty.get()),
+                  command=lambda: add_bot(bot_name.get(), difficulty.get()),
                   width=10,
                   bg='#f0f0f0',
                   activebackground='#bdbdbd').pack(anchor='w', padx=20, pady=3)
         tk.Button(self.toolbar,
                   text="Delete",
-                  command=lambda: self.delete_bot(bot_name.get()),
+                  command=lambda: delete_bot(bot_name.get()),
                   width=10,
                   bg='#f0f0f0',
                   activebackground='#bdbdbd').pack(anchor='w',ipadx=10, padx=20, pady=3)
 
-        # List of bots
-        tk.Label(self.toolbar, text="List of bots").pack(fill='x', ipady=10, pady=3)
-        
-        
-        
+        show_player_list()
+
 
     def rules(self):
         pass

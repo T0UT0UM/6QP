@@ -1,6 +1,7 @@
 import numpy as np
 import game_logic.game_constants as gc
 from game_logic.card import *
+from game_logic.player import Player
 
 class Gameboard:
     def __init__(self, deck):
@@ -73,14 +74,14 @@ class Gameboard:
 
 
 class Game:
-    def __init__(self, players):
+    def __init__(self):
         """
         Initialize a game with a list of players.
 
         Args:
             players (list): The list of players.
         """
-        self.players = players
+        self.players = [Player("You")]
         self.deck = Deck()
         self.gameboard = Gameboard(self.deck)
 
