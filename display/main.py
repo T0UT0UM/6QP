@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from game_logic.player import Player
+from game_logic.bot import Bot
 from display.gameboard import Gameboard
 from display.player_hand import Player_hand
 
@@ -25,7 +25,6 @@ class Menu:
 
         self.gameboard = Gameboard(self.game, self.gameboard_frame)
         self.player_hand = Player_hand(self.game, self.player_frame)
-        self.game.players[0].get_card = self.player_hand.get_card
 
         welcome = tk.PhotoImage(file="display/images/welcome.png")
         self.welcome_label = tk.Label(self.window, image=welcome)
@@ -87,10 +86,8 @@ class Menu:
             widget.destroy()
 
     def play(self):
-        self.game.init_player(self.game.players[0])
         self.window_update()
-        self.player_frame.bind("<Button-1>", self.player_hand.on_click)
-        #self.game.play()
+        self.game.play(self)
 
     def player_conf(self):
         """
@@ -98,7 +95,7 @@ class Menu:
         """
 
         def add_bot(bot_name, difficulty):
-            self.game.players.append(Player(bot_name, difficulty))
+            self.game.players.append(Bot(bot_name, difficulty))
             self.player_conf()
 
         def delete_bot(bot_name):

@@ -2,9 +2,9 @@ import sys
 sys.path.append('../game_logic')
 sys.path.append('../display')
 
-import game_logic.game as Game
+from game_logic.game import Game
 import display.main as display
 
 if __name__ == "__main__":
-    game = Game.Game()
+    game = Game()
     display.Menu(game)

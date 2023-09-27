@@ -18,6 +18,7 @@ class Player_hand:
             card_image = tk.PhotoImage(file="display/images/cards/"+str(card.value)+".png")
             card_label = tk.Label(self.player_frame, image=card_image)
             card_label.image = card_image
+            card_label.card_value = card.value
             card_label.pack(side=tk.LEFT, expand=True, fill=tk.BOTH, anchor='w')
 
     def clear_hand_zone(self):
@@ -29,28 +30,24 @@ class Player_hand:
 
     def get_card(self):
         """
-        Play a card from the player's hand.
-
-        Returns:
-            card_value (int): The value of the card to play.
+        Ask the player to click on a card from their deck and return the card value.
         """
-        # ask the player to click with the cursor on one of its card
-        # return the value of the card
-        card_value = 0
-
+        card_value = None
         def on_click(event):
-            global card_value
-            card_value = int(event.widget.image.cget("file").split("/")[-1].split(".")[0])
+            nonlocal card_value
+            card_value = event.widget.card_value
             print(card_value)
-
-        self.player_frame.bind("<Button-1>", on_click)
-        # wait for the player to click on a card
-        while card_value == 0:
-            self.player_frame.update()
-        self.player_frame.unbind("<Button-1>")
+            event.widget.master.quit()
+        for widget in self.player_frame.winfo_children():
+            widget.bind("<Button-1>", on_click)
+        self.player_frame.update()
         return card_value
 
-    def on_click(self, event):
-        global card_value
-        card_value = int(event.widget.image.cget("file").split("/")[-1].split(".")[0])
-        print(card_value)
+    def choose_row(self):
+        """
+        Choose a row to replace.
+
+        Returns:
+            row_number (int): The number of the row to replace.
+        """
+        pass

@@ -1,7 +1,8 @@
 import numpy as np
-import game_constants as gc
-from card import *
-from player import Player
+import game_logic.game_constants as gc
+from game_logic.card import *
+from game_logic.player import Player
+import display.player_hand as Ph
 
 
 class Gameboard:
@@ -93,7 +94,7 @@ class Game:
         Args:
             players (list): The list of players.
         """
-        self.players = []
+        self.players = [Player("You")]
         self.deck = Deck()
         self.gameboard = Gameboard(self.deck)
 
@@ -102,13 +103,12 @@ class Game:
         for i in range(gc.NB_TURNS):
             player.add_card_to_hand(self.deck)
 
-    def play(self):
+    def play(self, menu):
         """
         Play the game.
         """
         for player in self.players:
             self.init_player(player)
-
 
         for i in range(gc.NB_TURNS):
             card_of_players = []
@@ -116,21 +116,29 @@ class Game:
 
             # Show the gameboard
             self.gameboard.afficher()
+            menu.gameboard.display_rows()
 
             for player in self.players:
+                # Show player hand
                 print(player)
+                menu.player_hand.display_hand()
+
                 # While player.play_card() raises an ValueError, the player has to play a card
                 while True:
                     try:
-                        card_value = player.get_card()
+                        if player.difficulty == None:
+                            card_value = menu.player_hand.get_card()
+                            
+                        else :
+                            card_value = player.get_card()
                         card_of_players.append(player.play_card(card_value))
                         break
                     except ValueError :
                         continue
+
             # Sort the players by card value
             index_of_players = sorted(index_of_players, key=lambda x: card_of_players[x].value)
             
-
             # Print the card played by the players
             for index in index_of_players:
                 player = self.players[index]
@@ -148,8 +156,18 @@ class Game:
                     penalty = self.gameboard.add_card(card)
 
                 else:
-                    row_number = player.choose_row()
+                    # While player.choose_row() raises an ValueError, the player has to play a card
+                    while True:
+                        try:
+                            if player.difficulty == None:
+                                row_number = menu.gameboard.choose_row()
+                            else :
+                                row_number = player.choose_row()
+                            break
+                        except ValueError :
+                            continue
                     penalty = self.gameboard.replace_row(row_number - 1, card)
+
                 player.penalty_points += penalty
 
         # End of the game
