@@ -9,7 +9,7 @@ class Card:
             value (int): The numeric value of the card.
             bullheads (int): The number of bullheads on the card.
         """
-        assert 1 <= value <= 104, "Card value must be between 1 and 105"
+        assert 1 <= value <= 104, "Card value must be between 1 and 104"
         self.value = value
 
         if (value % 55 == 0):
@@ -47,7 +47,7 @@ class Deck:
         Draw one card from the deck.
 
         Returns:
-            list: The drawn card.
+            Card: The card that was drawn.
         """
         assert len(self.cards) > 0, "Cannot draw from an empty deck"
         return self.cards.pop()

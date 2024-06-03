@@ -2,7 +2,6 @@ import numpy as np
 import game_logic.game_constants as gc
 from game_logic.card import *
 from game_logic.player import Player
-import display.player_hand as Ph
 
 
 class Gameboard:
@@ -87,54 +86,45 @@ class Gameboard:
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, players=[]):
         """
         Initialize a game with a list of players.
 
         Args:
             players (list): The list of players.
         """
-        self.players = [Player("You")]
         self.deck = Deck()
         self.gameboard = Gameboard(self.deck)
-
-    def init_player(self, player):
-        # Initialize the players' hand
-        for i in range(gc.NB_TURNS):
-            player.add_card_to_hand(self.deck)
-
-    def play(self, menu):
-        """
-        Play the game.
-        """
+        self.players = players
         for player in self.players:
             self.init_player(player)
 
-        for i in range(gc.NB_TURNS):
+    def init_player(self, player):
+        # Initialize the players' hand
+        for _ in range(gc.NB_TURNS):
+            player.add_card_to_hand(self.deck.draw())
+
+    def play(self):
+        """
+        Play the game.
+        """
+        for _ in range(gc.NB_TURNS):
             card_of_players = []
             index_of_players = [i for i in range(len(self.players))]
 
             # Show the gameboard
             self.gameboard.afficher()
-            menu.gameboard.display_rows()
-
+            
             for player in self.players:
-                # Show player hand
+                # The player choose a card to play
                 print(player)
-                menu.player_hand.display_hand()
-
-                # While player.play_card() raises an ValueError, the player has to play a card
-                while True:
-                    try:
-                        if player.difficulty == None:
-                            card_value = menu.player_hand.get_card()
-                            
-                        else :
-                            card_value = player.get_card()
-                        card_of_players.append(player.play_card(card_value))
-                        break
-                    except ValueError :
-                        continue
+                card_value = None 
+                while card_value not in [card.value for card in player.hand]:
+                    card_value = player.choose_card()
+                    if card_value not in [card.value for card in player.hand]:
+                        print("You don't have this card in your hand.")
+                    
+                card_of_players.append(player.play_card(card_value))
 
             # Sort the players by card value
             index_of_players = sorted(index_of_players, key=lambda x: card_of_players[x].value)
@@ -156,16 +146,8 @@ class Game:
                     penalty = self.gameboard.add_card(card)
 
                 else:
-                    # While player.choose_row() raises an ValueError, the player has to play a card
-                    while True:
-                        try:
-                            if player.difficulty == None:
-                                row_number = menu.gameboard.choose_row()
-                            else :
-                                row_number = player.choose_row()
-                            break
-                        except ValueError :
-                            continue
+                    # Else, the player has to choose a row to replace
+                    row_number = player.choose_row()
                     penalty = self.gameboard.replace_row(row_number - 1, card)
 
                 player.penalty_points += penalty
@@ -189,7 +171,6 @@ class Game:
             print(player.name + " : " + str(player.penalty_points) + " penalty points")
 
 if __name__ == "__main__":
-    game = Game()
-    game.players.append(Player("Player 1"))
-    game.players.append(Player("Player 2"))
+    players = [Player("Player 1"), Player("Player 2")]
+    game = Game(players)
     game.play()

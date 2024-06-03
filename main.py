@@ -1,10 +1,9 @@
 import sys
-sys.path.append('../game_logic')
-sys.path.append('../display')
+sys.path.append('/game_logic')
+sys.path.append('/display')
+sys.path.append('/qLearning')
 
-from game_logic.game import Game
-import display.main as display
+import display.menu as display
 
 if __name__ == "__main__":
-    game = Game()
-    display.Menu(game)
+    display.Menu()
