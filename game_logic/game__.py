@@ -106,6 +106,8 @@ class Game:
         self.toolbar_frame = toolbar_frame
         self.gameboard_frame = gameboard_frame
         self.player_hand_frame = player_hand_frame
+        
+        self.remaining_turns = gc.NB_TURNS
 
     def init_player(self, player):
         # Initialize the players' hand
